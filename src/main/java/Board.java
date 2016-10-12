@@ -1,4 +1,7 @@
 import java.util.Arrays;
+import java.util.Random;
+
+import static java.lang.Math.*;
 
 public class Board {
     String[][] cells = create();
@@ -10,7 +13,7 @@ public class Board {
 
     private String[][] create() {
         String[][] array = new String[3][3];
-        for (int i = 0; i<3; i++) {
+        for (int i = 0; i <3; i++) {
             Arrays.fill(array[i], " ");
         }
         return array;
@@ -35,57 +38,69 @@ public class Board {
         rows[column] += i;
         if (column == row)
             diagonals[0] += i;
-        if (column + row == 4)
+        if (column + row == 2)
             diagonals[1] += i;
     }
 
     @Override
     public String toString() {
         String boardView = "";
-        for(int i = 0; i< numberOfColumns; i++) {
-            for(int k = 0; k< numberOfRows; k++) {
-                    boardView = boardView.concat(this.cells[i][k]);
-                boardView = boardView.concat("|");
-            }
-            boardView = boardView.concat("\n");
-            boardView = boardView.concat("-----");
-            boardView = boardView.concat("\n");
+        for(int i = 0; i < numberOfColumns; i++) {
+            for(int j = 0; j < numberOfRows; j++)
+                boardView += this.cells[i][j] + "|";
+            boardView += "\n------\n";
         }
         return boardView;
     }
 
     public boolean isGameOver() {
-        return (isBoardFull() | didAnyoneWin());
+        return (isBoardFull() || didAnyoneWin());
     }
 
     public boolean didAnyoneWin() {
-        return (isThereWinningColumn() | isThereWinningRow() | isThereWinningDiagonal());
+        return (isThereWinningColumn() || isThereWinningRow() || isThereWinningDiagonal());
     }
 
     private boolean isThereWinningDiagonal() {
-        return (diagonals[0].equals(3) | diagonals[0].equals(-3) | diagonals[1].equals(3) | diagonals[1].equals(-3));
+        return (abs(diagonals[0]) == 3 || abs(diagonals[1]) == 3);
     }
 
     private boolean isThereWinningRow() {
-        return (rows[0].equals(3) | rows[0].equals(-3) | rows[1].equals(3) | rows[1].equals(-3) | rows[2].equals(3) | rows[2].equals(-3));
+        return (abs(rows[0]) == 3 || abs(rows[1]) == 3 || abs(rows[2]) == 3);
+    }
+
+    private boolean isThereWinningColumn() {
+        return (abs(columns[0]) == 3 || abs(columns[1]) == 3 || abs(columns[2]) == 3);
     }
 
     private boolean isBoardFull() {
         boolean isBoardFull = true;
-        for(String[] column : cells) {
-            for (String cell : column){
-                if(cell.equals(" "))
+        for(int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++){
+                if(cells[i][j].equals(" "))
                     isBoardFull = false;
             }
         }
         return isBoardFull;
     }
 
-    public boolean isThereWinningColumn() {
-        return (columns[0].equals(3) | columns[0].equals(-3) | columns[1].equals(3) | columns[1].equals(-3) | columns[2].equals(3) | columns[2].equals(-3));
+    public void makeComputerMove(int playerNumber) {
+        boolean doesItSucceed = false;
+
+        while (!doesItSucceed) {
+            int column = generateRandom();
+            int row = generateRandom();
+            try {
+                putSignInCell(row, column, playerNumber);
+                doesItSucceed = true;
+            } catch (Board.ForbiddenOperation a){}
+        }
     }
 
-
+    private int generateRandom() {
+        Random generator = new Random();
+        return generator.nextInt(3);
+    }
 
     public class ForbiddenOperation extends RuntimeException {
     }
