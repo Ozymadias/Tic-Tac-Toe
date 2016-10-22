@@ -88,8 +88,8 @@ public class Board {
         boolean doesItSucceed = false;
 
         while (!doesItSucceed) {
-            int column = generateRandom();
-            int row = generateRandom();
+            int column = generateRandom(numberOfColumns);
+            int row = generateRandom(numberOfRows);
             try {
                 putSignInCell(row, column, playerNumber);
                 doesItSucceed = true;
@@ -97,9 +97,9 @@ public class Board {
         }
     }
 
-    private int generateRandom() {
+    private int generateRandom(int max) {
         Random generator = new Random();
-        return generator.nextInt(3);
+        return generator.nextInt(max);
     }
 
     public class ForbiddenOperation extends RuntimeException {
