@@ -1,3 +1,7 @@
+package main;
+
+import game.Game;
+
 import javax.swing.*;
 
 public class Main {

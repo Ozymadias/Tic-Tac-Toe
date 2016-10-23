@@ -1,12 +1,16 @@
+package game;
+
+import main.Cell;
+import main.Observer;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 public class Game {
-    private List<Observer> observers = new ArrayList<Observer>();
-    private int numberOfRows;
-    private int numberOfColumns;
+    private List<Observer> observers = new ArrayList<>();
+    int numberOfRows;
+    int numberOfColumns;
     private int[][] board;
     private int winningNumber = 3;
     private int currentPlayer = 0;
@@ -53,8 +57,72 @@ public class Game {
     }
 
     public boolean doesAnyoneWinAfter(Cell cell) {
-        isGameOver = (doesRowWin(cell) || doesColumnWin(cell));
+        isGameOver = (doesRowWin(cell) || doesColumnWin(cell) || doesDiagonalWin(cell) || doesAntiDiagonalWin(cell));
         return isGameOver;
+    }
+
+    private boolean doesAntiDiagonalWin(Cell cell) {
+        int row = cell.getX();
+        int column = cell.getY();
+        int howMany = 1 + howManyDownLeft(row, column) + howManyUpRight(row, column);
+
+        return howMany >= winningNumber;
+    }
+
+    private int howManyUpRight(int row, int column) {
+        int howMany = 0;
+        int currentRow = row - 1;
+        int currentColumn = column + 1;
+        while (currentRow >= 0 && currentColumn <numberOfColumns && board[currentRow][currentColumn] == board[row][column]) {
+            howMany += 1;
+            currentRow -= 1;
+            currentColumn += 1;
+        }
+        return howMany;
+    }
+
+    private int howManyDownLeft(int row, int column) {
+        int howMany = 0;
+        int currentRow = row + 1;
+        int currentColumn = column - 1;
+        while (currentRow < numberOfRows && currentColumn >= 0 && board[currentRow][currentColumn] == board[row][column]) {
+            howMany += 1;
+            currentRow += 1;
+            currentColumn -= 1;
+        }
+        return howMany;
+    }
+
+    private boolean doesDiagonalWin(Cell cell) {
+        int row = cell.getX();
+        int column = cell.getY();
+        int howMany = 1 + howManyUpLeft(row, column) + howManyDownRight(row, column);
+
+        return howMany >= winningNumber;
+    }
+
+    private int howManyDownRight(int row, int column) {
+        int howMany = 0;
+        int currentRow = row + 1;
+        int currentColumn = column + 1;
+        while (currentRow < numberOfRows && currentColumn < numberOfColumns && board[currentRow][currentColumn] == board[row][column]) {
+            howMany += 1;
+            currentRow += 1;
+            currentColumn += 1;
+        }
+        return howMany;
+    }
+
+    private int howManyUpLeft(int row, int column) {
+        int howMany = 0;
+        int currentRow = row - 1;
+        int currentColumn = column - 1;
+        while (currentRow >= 0 && currentColumn >= 0 && board[currentRow][currentColumn] == board[row][column]) {
+            howMany += 1;
+            currentRow -= 1;
+            currentColumn -= 1;
+        }
+        return howMany;
     }
 
     private void notifyAllAboutGameEnd(int currentPlayer) {
@@ -121,21 +189,5 @@ public class Game {
 
     public void register(Observer observer) {
         observers.add(observer);
-    }
-
-    public void makeComputerMove() {
-        boolean doesItSucceed = false;
-        while (!doesItSucceed) {
-            int column = generateRandom(numberOfColumns);
-            int row = generateRandom(numberOfRows);
-            Cell cell = new Cell(row, column);
-
-            makeMove(cell);
-        }
-    }
-
-    private int generateRandom(int max) {
-        Random generator = new Random();
-        return generator.nextInt(max);
     }
 }

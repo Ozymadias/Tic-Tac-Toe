@@ -1,3 +1,7 @@
+package main;
+
+import game.Game;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,10 +10,10 @@ public class Window extends JFrame implements ActionListener, Observer {
     private JButton[][] buttons = new JButton[3][3];
     private JMenuBar menuBar = new JMenuBar();
     ;
-    private JMenu newGame = new JMenu("New Game");
-    private JMenu onePlayer = new JMenu("1 Player Game");
+    private JMenu newGame = new JMenu("New game");
+    private JMenu onePlayer = new JMenu("1 Player game");
     ;
-    private JMenuItem twoPlayers = new JMenuItem("2 Players Game");
+    private JMenuItem twoPlayers = new JMenuItem("2 Players game");
     private JMenuItem firstPlayer = new JMenuItem("Play as first player");
     private JMenuItem secondPlayer = new JMenuItem("Play as second player");
     ;

@@ -1,3 +1,5 @@
+package main;
+
 import java.util.Scanner;
 
 public class ConsoleUI {
@@ -42,9 +44,9 @@ public class ConsoleUI {
         } while (!board.isGameOver());
 
         if (board.didAnyoneWin())
-            System.out.println("Game over and the winner is the player number " + (playerNumber + 1));
+            System.out.println("game.Game over and the winner is the player number " + (playerNumber + 1));
         else
-            System.out.println("Game over and there is no winner");
+            System.out.println("game.Game over and there is no winner");
     }
 
     private static int getProperNumber() {

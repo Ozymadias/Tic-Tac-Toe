@@ -1,3 +1,4 @@
+package main;
 
 public class Cell {
     private int x;
