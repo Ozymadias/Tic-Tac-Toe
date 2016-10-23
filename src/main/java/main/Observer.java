@@ -1,6 +1,7 @@
 package main;
 
 public interface Observer {
-    public abstract void update(Cell cell, String string);
-    public abstract void notifyAboutGameEnd(String string);
+    void update(Cell cell, String string);
+    void notifyAboutGameEnd(String string);
+    void notifyAboutDraw();
 }

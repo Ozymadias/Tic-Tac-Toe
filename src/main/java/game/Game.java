@@ -33,9 +33,31 @@ public class Game {
             if (doesAnyoneWinAfter(cell)) {
                 notifyAllAboutGameEnd(currentPlayer);
                 cleanBoard();
-            } else
+            } else {
                 currentPlayer = (currentPlayer + 1) % 2;
+                if (isBoardFull()) {
+                    notifyAllAboutDraw();
+                    cleanBoard();
+                }
+            }
         }
+    }
+
+    private void notifyAllAboutDraw() {
+        for (Observer observer : observers) {
+            observer.notifyAboutDraw();
+        }
+    }
+
+    private boolean isBoardFull() {
+        boolean isBoardFull = true;
+        for (int i = 0; i < numberOfRows; i++) {
+            for (int j = 0; j < numberOfColumns; j++) {
+                if (board[i][j] == -1)
+                    isBoardFull = false;
+            }
+        }
+        return isBoardFull;
     }
 
     private boolean isEmpty(int i) {

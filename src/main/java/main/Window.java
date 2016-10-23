@@ -21,6 +21,7 @@ public class Window extends JFrame implements ActionListener, Observer {
     private Game game;
     String winner = "";
     boolean isGameOver = false;
+    boolean isDraw = false;
 
     public Window(Game game) {
         this.game = game;
@@ -102,13 +103,16 @@ public class Window extends JFrame implements ActionListener, Observer {
             if (!isGameOver)
                 game.makeMove(cell);
             if (isGameOver) {
-                String text = String.format("Game over. The winner is the %s", winner);
+                String text = String.format("Game over. The winner is %s", winner);
                 gameOver.setText(text);
             }
+            if (isDraw)
+                gameOver.setText("Game over. There is no winner");
         } else if (source instanceof JMenuItem) {
             cleanBoard();
             gameOver.setText("");
             isGameOver = false;
+            isDraw = false;
             if (source != twoPlayers) {
                 if (source == firstPlayer)
                     ;
@@ -149,5 +153,10 @@ public class Window extends JFrame implements ActionListener, Observer {
     public void notifyAboutGameEnd(String sign) {
         winner = sign;
         isGameOver = true;
+    }
+
+    @Override
+    public void notifyAboutDraw() {
+        isDraw = true;
     }
 }
