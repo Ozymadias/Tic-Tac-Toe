@@ -6,10 +6,8 @@ import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-        Game game = new Game(3, 3);
 
-        Window window = new Window(game);
-        game.register(window);
+        Window window = new Window();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setVisible(true);
     }

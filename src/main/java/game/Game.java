@@ -8,12 +8,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Game {
-    private List<Observer> observers = new ArrayList<>();
+    List<Observer> observers = new ArrayList<>();
     int numberOfRows;
     int numberOfColumns;
-    private int[][] board;
-    private int winningNumber = 3;
-    private int currentPlayer = 0;
+    int[][] board;
+    int winningNumber = 3;
+    int currentPlayer = 0;
     boolean isGameOver = false;
 
     public Game(int numberOfRows, int numberOfColumns) {
@@ -32,24 +32,24 @@ public class Game {
             updateAll(cell, currentPlayer);
             if (doesAnyoneWinAfter(cell)) {
                 notifyAllAboutGameEnd(currentPlayer);
-                cleanBoard();
+                //cleanBoard();
             } else {
                 currentPlayer = (currentPlayer + 1) % 2;
                 if (isBoardFull()) {
                     notifyAllAboutDraw();
-                    cleanBoard();
+                    //cleanBoard();
                 }
             }
         }
     }
 
-    private void notifyAllAboutDraw() {
+    void notifyAllAboutDraw() {
         for (Observer observer : observers) {
             observer.notifyAboutDraw();
         }
     }
 
-    private boolean isBoardFull() {
+    boolean isBoardFull() {
         boolean isBoardFull = true;
         for (int i = 0; i < numberOfRows; i++) {
             for (int j = 0; j < numberOfColumns; j++) {
@@ -60,18 +60,18 @@ public class Game {
         return isBoardFull;
     }
 
-    private boolean isEmpty(int i) {
+    boolean isEmpty(int i) {
         return (-1) == i;
     }
 
-    private void updateAll(Cell cell, int currentPlayer) {
+    void updateAll(Cell cell, int currentPlayer) {
         String sign = getSign(currentPlayer);
         for (Observer observer : observers) {
             observer.update(cell, sign);
         }
     }
 
-    private String getSign(int currentPlayer) {
+    String getSign(int currentPlayer) {
         if (currentPlayer == 0)
             return "X";
         else
@@ -83,7 +83,7 @@ public class Game {
         return isGameOver;
     }
 
-    private boolean doesAntiDiagonalWin(Cell cell) {
+    boolean doesAntiDiagonalWin(Cell cell) {
         int row = cell.getX();
         int column = cell.getY();
         int howMany = 1 + howManyDownLeft(row, column) + howManyUpRight(row, column);
@@ -91,7 +91,7 @@ public class Game {
         return howMany >= winningNumber;
     }
 
-    private int howManyUpRight(int row, int column) {
+    int howManyUpRight(int row, int column) {
         int howMany = 0;
         int currentRow = row - 1;
         int currentColumn = column + 1;
@@ -103,7 +103,7 @@ public class Game {
         return howMany;
     }
 
-    private int howManyDownLeft(int row, int column) {
+    int howManyDownLeft(int row, int column) {
         int howMany = 0;
         int currentRow = row + 1;
         int currentColumn = column - 1;
@@ -115,7 +115,7 @@ public class Game {
         return howMany;
     }
 
-    private boolean doesDiagonalWin(Cell cell) {
+    boolean doesDiagonalWin(Cell cell) {
         int row = cell.getX();
         int column = cell.getY();
         int howMany = 1 + howManyUpLeft(row, column) + howManyDownRight(row, column);
@@ -123,7 +123,7 @@ public class Game {
         return howMany >= winningNumber;
     }
 
-    private int howManyDownRight(int row, int column) {
+    int howManyDownRight(int row, int column) {
         int howMany = 0;
         int currentRow = row + 1;
         int currentColumn = column + 1;
@@ -135,7 +135,7 @@ public class Game {
         return howMany;
     }
 
-    private int howManyUpLeft(int row, int column) {
+    int howManyUpLeft(int row, int column) {
         int howMany = 0;
         int currentRow = row - 1;
         int currentColumn = column - 1;
@@ -147,21 +147,21 @@ public class Game {
         return howMany;
     }
 
-    private void notifyAllAboutGameEnd(int currentPlayer) {
+    void notifyAllAboutGameEnd(int currentPlayer) {
         String sign = getSign(currentPlayer);
         for (Observer observer : observers) {
             observer.notifyAboutGameEnd(sign);
         }
     }
 
-    private void cleanBoard() {
+    void cleanBoard() {
         currentPlayer = 0;
         isGameOver = false;
         for (int i = 0; i < numberOfRows; i++)
             Arrays.fill(board[i], -1);
     }
 
-    private boolean doesRowWin(Cell cell) {
+    boolean doesRowWin(Cell cell) {
         int location = cell.getX();
         int column = cell.getY();
         int howMany = 1 + howManyOnLeft(location, column) + howManyOnRight(location, column);
@@ -169,7 +169,7 @@ public class Game {
         return howMany >= winningNumber;
     }
 
-    private int howManyOnLeft(int location, int column) {
+    int howManyOnLeft(int location, int column) {
         int howMany = 0;
         int currentLocation = location - 1;
         while (currentLocation >= 0 && board[currentLocation][column] == board[location][column]) {
@@ -179,7 +179,7 @@ public class Game {
         return howMany;
     }
 
-    private int howManyOnRight(int location, int column) {
+    int howManyOnRight(int location, int column) {
         int currentLocation = location + 1;
         int howMany = 0;
         while (currentLocation < numberOfColumns && board[currentLocation][column] == board[location][column]) {
@@ -189,7 +189,7 @@ public class Game {
         return howMany;
     }
 
-    private boolean doesColumnWin(Cell cell) {
+    boolean doesColumnWin(Cell cell) {
         int row = cell.getX();
         int location = cell.getY();
         int howMany = 1;
@@ -211,5 +211,9 @@ public class Game {
 
     public void register(Observer observer) {
         observers.add(observer);
+    }
+
+    public void computerMakesMove() {
+
     }
 }

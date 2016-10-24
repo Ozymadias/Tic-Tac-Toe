@@ -1,6 +1,8 @@
 package main;
 
 import game.Game;
+import game.GameWithComputerAsFirstPlayer;
+import game.GameWithComputerAsSecondPlayer;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -9,22 +11,21 @@ import java.awt.event.ActionListener;
 public class Window extends JFrame implements ActionListener, Observer {
     private JButton[][] buttons = new JButton[3][3];
     private JMenuBar menuBar = new JMenuBar();
-    ;
+
     private JMenu newGame = new JMenu("New game");
     private JMenu onePlayer = new JMenu("1 Player game");
-    ;
+
     private JMenuItem twoPlayers = new JMenuItem("2 Players game");
     private JMenuItem firstPlayer = new JMenuItem("Play as first player");
     private JMenuItem secondPlayer = new JMenuItem("Play as second player");
-    ;
+
     private JLabel gameOver;
     private Game game;
     String winner = "";
     boolean isGameOver = false;
     boolean isDraw = false;
 
-    public Window(Game game) {
-        this.game = game;
+    public Window() {
         setSize(400, 400);
         setTitle("Tic Tac Toe");
         setLayout(null);
@@ -90,6 +91,9 @@ public class Window extends JFrame implements ActionListener, Observer {
         gameOver = new JLabel("");
         gameOver.setBounds(100, 50, 300, 40);
         add(gameOver);
+
+        game = new Game(3, 3);
+        game.register(this);
     }
 
     @Override
@@ -114,10 +118,19 @@ public class Window extends JFrame implements ActionListener, Observer {
             isGameOver = false;
             isDraw = false;
             if (source != twoPlayers) {
-                if (source == firstPlayer)
-                    ;
-                else
-                    ;
+                if (source == firstPlayer) {
+                    this.game = new GameWithComputerAsFirstPlayer(3, 3);
+                    game.register(this);
+                }
+                else {
+                    this.game = new GameWithComputerAsSecondPlayer(3, 3);
+                    game.register(this);
+                    game.computerMakesMove();
+                }
+            }
+            else {
+                this.game = new Game(3, 3);
+                game.register(this);
             }
         }
     }
