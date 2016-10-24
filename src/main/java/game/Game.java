@@ -32,32 +32,13 @@ public class Game {
             updateAll(cell, currentPlayer);
             if (doesAnyoneWinAfter(cell)) {
                 notifyAllAboutGameEnd(currentPlayer);
-                //cleanBoard();
             } else {
                 currentPlayer = (currentPlayer + 1) % 2;
                 if (isBoardFull()) {
                     notifyAllAboutDraw();
-                    //cleanBoard();
                 }
             }
         }
-    }
-
-    void notifyAllAboutDraw() {
-        for (Observer observer : observers) {
-            observer.notifyAboutDraw();
-        }
-    }
-
-    boolean isBoardFull() {
-        boolean isBoardFull = true;
-        for (int i = 0; i < numberOfRows; i++) {
-            for (int j = 0; j < numberOfColumns; j++) {
-                if (board[i][j] == -1)
-                    isBoardFull = false;
-            }
-        }
-        return isBoardFull;
     }
 
     boolean isEmpty(int i) {
@@ -83,34 +64,84 @@ public class Game {
         return isGameOver;
     }
 
-    boolean doesAntiDiagonalWin(Cell cell) {
-        int row = cell.getX();
+    void notifyAllAboutGameEnd(int currentPlayer) {
+        String sign = getSign(currentPlayer);
+        for (Observer observer : observers) {
+            observer.notifyAboutGameEnd(sign);
+        }
+    }
+
+    boolean isBoardFull() {
+        boolean isBoardFull = true;
+        for (int i = 0; i < numberOfRows; i++) {
+            for (int j = 0; j < numberOfColumns; j++) {
+                if (board[i][j] == -1)
+                    isBoardFull = false;
+            }
+        }
+        return isBoardFull;
+    }
+
+    void notifyAllAboutDraw() {
+        for (Observer observer : observers) {
+            observer.notifyAboutDraw();
+        }
+    }
+
+
+    boolean doesRowWin(Cell cell) {
+        int currentRow = cell.getX();
         int column = cell.getY();
-        int howMany = 1 + howManyDownLeft(row, column) + howManyUpRight(row, column);
+        int howMany = 1 + howManyOnLeft(currentRow, column) + howManyOnRight(currentRow, column);
 
         return howMany >= winningNumber;
     }
 
-    int howManyUpRight(int row, int column) {
+    int howManyOnLeft(int currentRow, int column) {
         int howMany = 0;
-        int currentRow = row - 1;
-        int currentColumn = column + 1;
-        while (currentRow >= 0 && currentColumn <numberOfColumns && board[currentRow][currentColumn] == board[row][column]) {
+        currentRow -= 1;
+        while (currentRow >= 0 && board[currentRow][column] == board[currentRow][column]) {
             howMany += 1;
             currentRow -= 1;
-            currentColumn += 1;
         }
         return howMany;
     }
 
-    int howManyDownLeft(int row, int column) {
+    int howManyOnRight(int location, int column) {
+        int currentLocation = location + 1;
         int howMany = 0;
-        int currentRow = row + 1;
-        int currentColumn = column - 1;
-        while (currentRow < numberOfRows && currentColumn >= 0 && board[currentRow][currentColumn] == board[row][column]) {
+        while (currentLocation < numberOfColumns && board[currentLocation][column] == board[location][column]) {
             howMany += 1;
-            currentRow += 1;
+            currentLocation += 1;
+        }
+        return howMany;
+    }
+
+    boolean doesColumnWin(Cell cell) {
+        int row = cell.getX();
+        int currentColumn = cell.getY();
+        int howMany = 1 + howManyOnUp(row, currentColumn) + howManyOnDown(row, currentColumn);
+
+        return howMany >= winningNumber;
+    }
+
+
+    int howManyOnUp(int row, int currentColumn) {
+        int howMany = 0;
+        currentColumn -= 1;
+        while (currentColumn >= 0 && board[row][currentColumn] == board[row][currentColumn]) {
+            howMany += 1;
             currentColumn -= 1;
+        }
+        return howMany;
+    }
+
+    int howManyOnDown(int row, int currentColumn) {
+        currentColumn += 1;
+        int howMany = 0;
+        while (currentColumn < numberOfRows && board[row][currentColumn] == board[row][currentColumn]) {
+            howMany += 1;
+            currentColumn += 1;
         }
         return howMany;
     }
@@ -147,66 +178,36 @@ public class Game {
         return howMany;
     }
 
-    void notifyAllAboutGameEnd(int currentPlayer) {
-        String sign = getSign(currentPlayer);
-        for (Observer observer : observers) {
-            observer.notifyAboutGameEnd(sign);
-        }
-    }
-
-    void cleanBoard() {
-        currentPlayer = 0;
-        isGameOver = false;
-        for (int i = 0; i < numberOfRows; i++)
-            Arrays.fill(board[i], -1);
-    }
-
-    boolean doesRowWin(Cell cell) {
-        int location = cell.getX();
-        int column = cell.getY();
-        int howMany = 1 + howManyOnLeft(location, column) + howManyOnRight(location, column);
-
-        return howMany >= winningNumber;
-    }
-
-    int howManyOnLeft(int location, int column) {
-        int howMany = 0;
-        int currentLocation = location - 1;
-        while (currentLocation >= 0 && board[currentLocation][column] == board[location][column]) {
-            howMany += 1;
-            currentLocation -= 1;
-        }
-        return howMany;
-    }
-
-    int howManyOnRight(int location, int column) {
-        int currentLocation = location + 1;
-        int howMany = 0;
-        while (currentLocation < numberOfColumns && board[currentLocation][column] == board[location][column]) {
-            howMany += 1;
-            currentLocation += 1;
-        }
-        return howMany;
-    }
-
-    boolean doesColumnWin(Cell cell) {
+    boolean doesAntiDiagonalWin(Cell cell) {
         int row = cell.getX();
-        int location = cell.getY();
-        int howMany = 1;
-        int currentLocation = location - 1;
-
-        while (currentLocation >= 0 && board[row][currentLocation] == board[row][location]) {
-            howMany += 1;
-            currentLocation -= 1;
-        }
-
-        currentLocation = location + 1;
-        while (currentLocation < numberOfRows && board[row][currentLocation] == board[row][location]) {
-            howMany += 1;
-            currentLocation += 1;
-        }
+        int column = cell.getY();
+        int howMany = 1 + howManyDownLeft(row, column) + howManyUpRight(row, column);
 
         return howMany >= winningNumber;
+    }
+
+    int howManyUpRight(int row, int column) {
+        int howMany = 0;
+        int currentRow = row - 1;
+        int currentColumn = column + 1;
+        while (currentRow >= 0 && currentColumn <numberOfColumns && board[currentRow][currentColumn] == board[row][column]) {
+            howMany += 1;
+            currentRow -= 1;
+            currentColumn += 1;
+        }
+        return howMany;
+    }
+
+    int howManyDownLeft(int row, int column) {
+        int howMany = 0;
+        int currentRow = row + 1;
+        int currentColumn = column - 1;
+        while (currentRow < numberOfRows && currentColumn >= 0 && board[currentRow][currentColumn] == board[row][column]) {
+            howMany += 1;
+            currentRow += 1;
+            currentColumn -= 1;
+        }
+        return howMany;
     }
 
     public void register(Observer observer) {
@@ -214,6 +215,5 @@ public class Game {
     }
 
     public void computerMakesMove() {
-
     }
 }

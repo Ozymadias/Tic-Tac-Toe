@@ -88,7 +88,7 @@ public class Window extends JFrame implements ActionListener, Observer {
         newGame.add(onePlayer);
         newGame.add(twoPlayers);
 
-        gameOver = new JLabel("");
+        gameOver = new JLabel("Two player game. X begins.");
         gameOver.setBounds(100, 50, 300, 40);
         add(gameOver);
 
@@ -102,6 +102,7 @@ public class Window extends JFrame implements ActionListener, Observer {
 
         if (source instanceof JButton) {
             JButton button = (JButton) source;
+            gameOver.setText("");
 
             Cell cell = getCell(button);
             if (!isGameOver)
@@ -114,21 +115,23 @@ public class Window extends JFrame implements ActionListener, Observer {
                 gameOver.setText("Game over. There is no winner");
         } else if (source instanceof JMenuItem) {
             cleanBoard();
-            gameOver.setText("");
             isGameOver = false;
             isDraw = false;
             if (source != twoPlayers) {
                 if (source == firstPlayer) {
+                    gameOver.setText("Game with computer. You begin.");
                     this.game = new GameWithComputerAsFirstPlayer(3, 3);
                     game.register(this);
                 }
                 else {
+                    gameOver.setText("Game with computer. Your turn.");
                     this.game = new GameWithComputerAsSecondPlayer(3, 3);
                     game.register(this);
                     game.computerMakesMove();
                 }
             }
             else {
+                gameOver.setText("Two player game. X begins.");
                 this.game = new Game(3, 3);
                 game.register(this);
             }
