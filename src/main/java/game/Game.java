@@ -88,29 +88,28 @@ public class Game {
         }
     }
 
-
     boolean doesRowWin(Cell cell) {
-        int currentRow = cell.getX();
+        int row = cell.getX();
         int column = cell.getY();
-        int howMany = 1 + howManyOnLeft(currentRow, column) + howManyOnRight(currentRow, column);
+        int howMany = 1 + howManyOnLeft(row, column) + howManyOnRight(row, column);
 
         return howMany >= winningNumber;
     }
 
-    int howManyOnLeft(int currentRow, int column) {
+    int howManyOnLeft(int row, int column) {
         int howMany = 0;
-        currentRow -= 1;
-        while (currentRow >= 0 && board[currentRow][column] == board[currentRow][column]) {
+        int currentLocation = column - 1;
+        while (currentLocation >= 0 && board[row][currentLocation] == board[row][column]) {
             howMany += 1;
-            currentRow -= 1;
+            currentLocation -= 1;
         }
         return howMany;
     }
 
-    int howManyOnRight(int location, int column) {
-        int currentLocation = location + 1;
+    int howManyOnRight(int row, int column) {
         int howMany = 0;
-        while (currentLocation < numberOfColumns && board[currentLocation][column] == board[location][column]) {
+        int currentLocation = column + 1;
+        while (currentLocation < numberOfColumns && board[row][currentLocation] == board[row][column]) {
             howMany += 1;
             currentLocation += 1;
         }
@@ -119,29 +118,29 @@ public class Game {
 
     boolean doesColumnWin(Cell cell) {
         int row = cell.getX();
-        int currentColumn = cell.getY();
-        int howMany = 1 + howManyOnUp(row, currentColumn) + howManyOnDown(row, currentColumn);
+        int column = cell.getY();
+        int howMany = 1 + howManyOnUp(row, column) + howManyOnDown(row, column);
 
         return howMany >= winningNumber;
     }
 
 
-    int howManyOnUp(int row, int currentColumn) {
+    int howManyOnUp(int row, int column) {
         int howMany = 0;
-        currentColumn -= 1;
-        while (currentColumn >= 0 && board[row][currentColumn] == board[row][currentColumn]) {
+        int currentLocation = row - 1;
+        while (currentLocation >= 0 && board[currentLocation][column] == board[row][column]) {
             howMany += 1;
-            currentColumn -= 1;
+            currentLocation -= 1;
         }
         return howMany;
     }
 
-    int howManyOnDown(int row, int currentColumn) {
-        currentColumn += 1;
+    int howManyOnDown(int row, int column) {
         int howMany = 0;
-        while (currentColumn < numberOfRows && board[row][currentColumn] == board[row][currentColumn]) {
+        int currentLocation = row + 1;
+        while (currentLocation < numberOfRows && board[currentLocation][column] == board[row][column]) {
             howMany += 1;
-            currentColumn += 1;
+            currentLocation += 1;
         }
         return howMany;
     }
@@ -152,18 +151,6 @@ public class Game {
         int howMany = 1 + howManyUpLeft(row, column) + howManyDownRight(row, column);
 
         return howMany >= winningNumber;
-    }
-
-    int howManyDownRight(int row, int column) {
-        int howMany = 0;
-        int currentRow = row + 1;
-        int currentColumn = column + 1;
-        while (currentRow < numberOfRows && currentColumn < numberOfColumns && board[currentRow][currentColumn] == board[row][column]) {
-            howMany += 1;
-            currentRow += 1;
-            currentColumn += 1;
-        }
-        return howMany;
     }
 
     int howManyUpLeft(int row, int column) {
@@ -178,24 +165,24 @@ public class Game {
         return howMany;
     }
 
+    int howManyDownRight(int row, int column) {
+        int howMany = 0;
+        int currentRow = row + 1;
+        int currentColumn = column + 1;
+        while (currentRow < numberOfRows && currentColumn < numberOfColumns && board[currentRow][currentColumn] == board[row][column]) {
+            howMany += 1;
+            currentRow += 1;
+            currentColumn += 1;
+        }
+        return howMany;
+    }
+
     boolean doesAntiDiagonalWin(Cell cell) {
         int row = cell.getX();
         int column = cell.getY();
         int howMany = 1 + howManyDownLeft(row, column) + howManyUpRight(row, column);
 
         return howMany >= winningNumber;
-    }
-
-    int howManyUpRight(int row, int column) {
-        int howMany = 0;
-        int currentRow = row - 1;
-        int currentColumn = column + 1;
-        while (currentRow >= 0 && currentColumn <numberOfColumns && board[currentRow][currentColumn] == board[row][column]) {
-            howMany += 1;
-            currentRow -= 1;
-            currentColumn += 1;
-        }
-        return howMany;
     }
 
     int howManyDownLeft(int row, int column) {
@@ -206,6 +193,18 @@ public class Game {
             howMany += 1;
             currentRow += 1;
             currentColumn -= 1;
+        }
+        return howMany;
+    }
+
+    int howManyUpRight(int row, int column) {
+        int howMany = 0;
+        int currentRow = row - 1;
+        int currentColumn = column + 1;
+        while (currentRow >= 0 && currentColumn <numberOfColumns && board[currentRow][currentColumn] == board[row][column]) {
+            howMany += 1;
+            currentRow -= 1;
+            currentColumn += 1;
         }
         return howMany;
     }
