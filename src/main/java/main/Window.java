@@ -19,7 +19,7 @@ public class Window extends JFrame implements ActionListener, Observer {
     private JMenuItem firstPlayer = new JMenuItem("Play as first player");
     private JMenuItem secondPlayer = new JMenuItem("Play as second player");
 
-    private JLabel gameOver;
+    private JLabel infoAboutGame;
     private Game game;
     String winner = "";
     boolean isGameOver = false;
@@ -88,9 +88,9 @@ public class Window extends JFrame implements ActionListener, Observer {
         newGame.add(onePlayer);
         newGame.add(twoPlayers);
 
-        gameOver = new JLabel("Two player game. X begins.");
-        gameOver.setBounds(100, 50, 300, 40);
-        add(gameOver);
+        infoAboutGame = new JLabel("Two player game. X begins.");
+        infoAboutGame.setBounds(100, 50, 300, 40);
+        add(infoAboutGame);
 
         game = new Game(3, 3);
         game.register(this);
@@ -102,36 +102,38 @@ public class Window extends JFrame implements ActionListener, Observer {
 
         if (source instanceof JButton) {
             JButton button = (JButton) source;
-            gameOver.setText("");
+            infoAboutGame.setText("");
 
             Cell cell = getCell(button);
-            if (!isGameOver)
+            if (!isGameOver) {
                 game.makeMove(cell);
-            if (isGameOver) {
-                String text = String.format("Game over. The winner is %s", winner);
-                gameOver.setText(text);
+                if (isGameOver) {
+                    String text = String.format("Game over. The winner is %s", winner);
+                    infoAboutGame.setText(text);
+                }
+                if (isDraw)
+                    infoAboutGame.setText("Game over. There is no winner");
             }
-            if (isDraw)
-                gameOver.setText("Game over. There is no winner");
         } else if (source instanceof JMenuItem) {
             cleanBoard();
             isGameOver = false;
             isDraw = false;
+            
             if (source != twoPlayers) {
                 if (source == firstPlayer) {
-                    gameOver.setText("Game with computer. You begin.");
+                    infoAboutGame.setText("Game with computer. You begin.");
                     this.game = new GameWithComputerAsFirstPlayer(3, 3);
                     game.register(this);
                 }
                 else {
-                    gameOver.setText("Game with computer. Your turn.");
+                    infoAboutGame.setText("Game with computer. Your turn.");
                     this.game = new GameWithComputerAsSecondPlayer(3, 3);
                     game.register(this);
                     game.computerMakesMove();
                 }
             }
             else {
-                gameOver.setText("Two player game. X begins.");
+                infoAboutGame.setText("Two player game. X begins.");
                 this.game = new Game(3, 3);
                 game.register(this);
             }

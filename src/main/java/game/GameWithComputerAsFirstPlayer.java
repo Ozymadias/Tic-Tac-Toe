@@ -21,15 +21,11 @@ public class GameWithComputerAsFirstPlayer extends Game {
     }
 
     public void computerMakesMove() {
-        Cell cell;
         boolean doesItSucceed = false;
         while (!doesItSucceed) {
             int column = generateRandom(numberOfColumns);
             int row = generateRandom(numberOfRows);
-            cell = new Cell(row, column);
-
-            row = cell.getX();
-            column = cell.getY();
+            Cell cell = new Cell(row, column);
             if (board[row][column] == -1) {
                 super.makeMove(cell);
                 doesItSucceed = true;
